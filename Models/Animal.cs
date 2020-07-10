@@ -35,9 +35,18 @@ namespace AnimalApi.Models {
         }
     }
 
+
     public class AnimalContext : DbContext
     {
         public AnimalContext(DbContextOptions<AnimalContext> options) : base(options){}
         public DbSet<Animal> Animals { get; set; }
+    }
+
+
+    public class AnimalDTO {
+        public long Id { get; set; }
+        public string name { get; set; }
+        public int hunger { get; set; }
+        public int happiness { get; set; }
     }
 }
