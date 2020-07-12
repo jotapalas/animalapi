@@ -53,36 +53,20 @@ namespace AnimalApi.Controllers
             return await this.performAction(id, "stroke");
         }
 
-        private async Task<ActionResult<PetResponseDTO>> performAction(long id, string action)
-        {
-            List<string> possibleActions = new List<string>(){
-                "feed",
-                "stroke"
-            };
-
-            if (!possibleActions.Contains(action)) {
-                return BadRequest();
+        [HttpPatch("step")]
+        public async Task<ActionResult<PetResponseDTO>> StepAllPets() {
+            foreach (Pet pet in _context.Pets) {
+                pet.step();
             }
 
-            var pet = await _context.Pets.FindAsync(id);
-            if (pet == null)
-            {
-                return NotFound();
-            }
-
-            MethodInfo method = pet.GetType().GetMethod(action);
-            method.Invoke(pet, new object[]{});
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException) when (!PetExists(id))
-            {
-                return NotFound();
-            }
+            await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        [HttpPut("{id}/step")]
+        public async Task<ActionResult<PetResponseDTO>> StepPet(long id) {
+            return await performAction(id, "step");
         }
 
         [HttpPost]
@@ -136,5 +120,38 @@ namespace AnimalApi.Controllers
 
         private bool PetExists(long id) =>
             _context.Pets.Any(e => e.Id == id);
+
+        private async Task<ActionResult<PetResponseDTO>> performAction(long id, string action)
+        {
+            List<string> possibleActions = new List<string>(){
+                "feed",
+                "stroke",
+                "step"
+            };
+
+            if (!possibleActions.Contains(action)) {
+                return BadRequest();
+            }
+
+            var pet = await _context.Pets.FindAsync(id);
+            if (pet == null)
+            {
+                return NotFound();
+            }
+
+            MethodInfo method = pet.GetType().GetMethod(action);
+            method.Invoke(pet, new object[]{});
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException) when (!PetExists(id))
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
     }
 }
