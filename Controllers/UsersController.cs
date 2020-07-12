@@ -40,7 +40,7 @@ namespace AnimalApi.Controllers
             return user.toDto();
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id}/test")]
         public async Task<IActionResult> UpdateUser(long id, UserDTO userDTO)
         {
             if (id != userDTO.Id)

@@ -44,13 +44,13 @@ namespace AnimalApi.Controllers
         }
 
         [HttpPut("{id}/feed")]
-        public async Task<ActionResult<PetResponseDTO>> feedPet(long id) {
-            return await this.performAction(id, "feed");
+        public async Task<ActionResult<PetResponseDTO>> FeedPet(long id, PetFeedDTO body) {
+            return await performAction(id, "feed", new object[]{body.NutritionalValue});
         }
 
         [HttpPut("{id}/stroke")]
-        public async Task<ActionResult<PetResponseDTO>> strokePet(long id) {
-            return await this.performAction(id, "stroke");
+        public async Task<ActionResult<PetResponseDTO>> StrokePet(long id, PetStrokeDTO body) {
+            return await performAction(id, "stroke", new object[]{body.HappinessIncrease});
         }
 
         [HttpPatch("step")]
@@ -65,8 +65,8 @@ namespace AnimalApi.Controllers
         }
 
         [HttpPut("{id}/step")]
-        public async Task<ActionResult<PetResponseDTO>> StepPet(long id) {
-            return await performAction(id, "step");
+        public async Task<ActionResult<PetResponseDTO>> StepPet(long id, PetStepDTO body) {
+            return await performAction(id, "step", new object[]{body.HungerIncrease, body.HappinessDecrease});
         }
 
         [HttpPost]
@@ -121,7 +121,7 @@ namespace AnimalApi.Controllers
         private bool PetExists(long id) =>
             _context.Pets.Any(e => e.Id == id);
 
-        private async Task<ActionResult<PetResponseDTO>> performAction(long id, string action)
+        private async Task<ActionResult<PetResponseDTO>> performAction(long id, string action, object[] parameters = null)
         {
             List<string> possibleActions = new List<string>(){
                 "feed",
@@ -140,7 +140,7 @@ namespace AnimalApi.Controllers
             }
 
             MethodInfo method = pet.GetType().GetMethod(action);
-            method.Invoke(pet, new object[]{});
+            method.Invoke(pet, parameters);
 
             try
             {
@@ -153,5 +153,6 @@ namespace AnimalApi.Controllers
 
             return NoContent();
         }
+
     }
 }

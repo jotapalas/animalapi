@@ -17,20 +17,20 @@ namespace AnimalApi.Models {
             this.Happiness = 0;
         }
 
-        public Pet stroke() {
-            this.Happiness += 10;
+        public Pet stroke(int happiness = 10) {
+            this.Happiness += happiness;
             return this;
         }
 
-        public Pet feed() {
-            this.Hunger -= 10;
+        public Pet feed(int nutritionalValue = 10) {
+            this.Hunger -= nutritionalValue;
             return this;
         }
 
-        public Pet step() {
+        public Pet step(int hungerIncrease = 1, int happinessDecrease = 1) {
             // Increases hunger and decreases happiness
-            this.Hunger += 1;
-            this.Happiness -= 1;
+            this.Hunger += hungerIncrease;
+            this.Happiness -= happinessDecrease;
             return this;
         }
 
@@ -52,6 +52,7 @@ namespace AnimalApi.Models {
         public string Name { get; set; }
     }
 
+
     public class PetResponseDTO {
         public long Id { get; set; }
         public long AnimalId { get; set; }
@@ -59,5 +60,21 @@ namespace AnimalApi.Models {
         public string Name { get; set; }
         public int Hunger { get; set; }
         public int Happiness { get; set; }
+    }
+
+
+    public class PetStepDTO {
+        public int HungerIncrease { get; set; }
+        public int HappinessDecrease { get; set; }
+    }
+
+
+    public class PetFeedDTO {
+        public int NutritionalValue { get; set; }
+    }
+
+
+    public class PetStrokeDTO {
+        public int HappinessIncrease { get; set; }
     }
 }
