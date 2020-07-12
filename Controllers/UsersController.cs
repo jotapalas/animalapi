@@ -20,15 +20,15 @@ namespace AnimalApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<UserResponseDTO>>> GetUsers()
         {
             return await _context.Users
-                .Select(x => UserToDTO(x))
+                .Select(x => x.toDto())
                 .ToListAsync();
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserDTO>> GetUser(long id)
+        public async Task<ActionResult<UserResponseDTO>> GetUser(long id)
         {
             var user = await _context.Users.FindAsync(id);
 
@@ -37,7 +37,7 @@ namespace AnimalApi.Controllers
                 return NotFound();
             }
 
-            return UserToDTO(user);
+            return user.toDto();
         }
 
         [HttpPut("{id}")]
@@ -82,7 +82,7 @@ namespace AnimalApi.Controllers
             return CreatedAtAction(
                 nameof(CreateUser),
                 new { id = user.Id },
-                UserToDTO(user));
+                user.toDto());
         }
 
         [HttpPost("{id}/addPet")]
@@ -127,7 +127,7 @@ namespace AnimalApi.Controllers
             return CreatedAtAction(
                 nameof(AddPetToUser),
                 new { id = user.Id },
-                UserToDTO(user));
+                user.toDto());
         }
 
         [HttpDelete("{id}")]
@@ -149,12 +149,5 @@ namespace AnimalApi.Controllers
         private bool UserExists(long id) =>
             _context.Users.Any(e => e.Id == id);
 
-        private static UserDTO UserToDTO(User user) =>
-            new UserDTO
-            {
-                Id = user.Id,
-                name = user.name,
-                pets = user.pets
-            };
-        }
+    }
 }

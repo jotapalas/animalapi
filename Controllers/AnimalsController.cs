@@ -26,7 +26,7 @@ namespace AnimalApi.Controllers
         public async Task<ActionResult<IEnumerable<AnimalDTO>>> GetAnimals()
         {
             return await _context.Animals
-                .Select(x => AnimalToDTO(x))
+                .Select(x => x.toDTO())
                 .ToListAsync();
         }
 
@@ -40,7 +40,7 @@ namespace AnimalApi.Controllers
                 return NotFound();
             }
 
-            return AnimalToDTO(animal);
+            return animal.toDTO();
         }
 
         [HttpPost]
@@ -57,7 +57,7 @@ namespace AnimalApi.Controllers
             return CreatedAtAction(
                 nameof(CreateAnimal),
                 new { id = animal.Id },
-                AnimalToDTO(animal));
+                animal.toDTO());
         }
 
         [HttpDelete("{id}")]
@@ -79,10 +79,5 @@ namespace AnimalApi.Controllers
         private bool AnimalExists(long id) =>
             _context.Animals.Any(e => e.Id == id);
 
-        private static AnimalDTO AnimalToDTO(Animal animal) => new AnimalDTO
-        {
-            Id = animal.Id,
-            name = animal.name
-        };
     }
 }

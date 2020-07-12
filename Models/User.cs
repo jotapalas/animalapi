@@ -11,9 +11,15 @@ namespace AnimalApi.Models{
         }
 
         public UserResponseDTO toDto () {
-            return new UserResponseDTO {
+            List<PetResponseDTO> pets = new List<PetResponseDTO>();
+            foreach (Pet pet in this.pets) {
+                pets.Add(pet.toDTO());
+            }
+            return new UserResponseDTO
+            {
+                Id = this.Id,
                 name = this.name,
-                Id = this.Id
+                pets = pets
             };
         }
     }
@@ -21,11 +27,11 @@ namespace AnimalApi.Models{
     public class UserDTO {
         public long Id { get; set; }
         public string name { get; set; }
-        public ICollection<Pet> pets { get; set; }
     }
 
     public class UserResponseDTO {
         public long Id { get; set; }
         public string name { get; set; }
+        public ICollection<PetResponseDTO> pets { get; set; }
     }
 }

@@ -26,7 +26,7 @@ namespace AnimalApi.Controllers
         public async Task<ActionResult<IEnumerable<PetResponseDTO>>> GetPets()
         {
             return await _context.Pets
-                .Select(x => PetToDTO(x))
+                .Select(x => x.toDTO())
                 .ToListAsync();
         }
 
@@ -40,7 +40,7 @@ namespace AnimalApi.Controllers
                 return NotFound();
             }
 
-            return PetToDTO(pet);
+            return pet.toDTO();
         }
 
         [HttpPut("{id}/feed")]
@@ -64,14 +64,14 @@ namespace AnimalApi.Controllers
                 return BadRequest();
             }
 
-            var animal = await _context.Animals.FindAsync(id);
-            if (animal == null)
+            var pet = await _context.Pets.FindAsync(id);
+            if (pet == null)
             {
                 return NotFound();
             }
 
-            MethodInfo method = animal.GetType().GetMethod(action);
-            method.Invoke(animal, new object[]{});
+            MethodInfo method = pet.GetType().GetMethod(action);
+            method.Invoke(pet, new object[]{});
 
             try
             {
@@ -115,7 +115,7 @@ namespace AnimalApi.Controllers
             return CreatedAtAction(
                 nameof(CreatePet),
                 new { id = pet.Id },
-                PetToDTO(pet));
+                pet.toDTO());
         }
 
         [HttpDelete("{id}")]
@@ -136,15 +136,5 @@ namespace AnimalApi.Controllers
 
         private bool PetExists(long id) =>
             _context.Pets.Any(e => e.Id == id);
-
-        private static PetResponseDTO PetToDTO(Pet pet) => new PetResponseDTO
-        {
-            Id = pet.Id,
-            Name = pet.Name,
-            OwnerId = pet.OwnerId,
-            AnimalId = pet.AnimalId,
-            Happiness = pet.Happiness,
-            Hunger = pet.Hunger
-        };
     }
 }

@@ -33,6 +33,15 @@ namespace AnimalApi.Models {
             this.Happiness -= 1;
             return this;
         }
+
+        public PetResponseDTO toDTO() => new PetResponseDTO {
+            Id = this.Id,
+            Name = this.Name,
+            AnimalId = this.AnimalId,
+            OwnerId = this.OwnerId,
+            Hunger = this.Hunger,
+            Happiness = this.Happiness
+        };
     }
 
 
