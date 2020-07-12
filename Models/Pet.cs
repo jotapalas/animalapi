@@ -19,18 +19,30 @@ namespace AnimalApi.Models {
 
         public Pet stroke(int happiness = 10) {
             this.Happiness += happiness;
+            if (this.Happiness < -100) {
+                this.Happiness = -100;
+            }
+            if (this.Happiness > 100) {
+                this.Happiness = 100;
+            }
             return this;
         }
 
         public Pet feed(int nutritionalValue = 10) {
             this.Hunger -= nutritionalValue;
+            if (this.Hunger < -100) {
+                this.Hunger = -100;
+            }
+            if (this.Hunger > 100) {
+                this.Hunger = 100;
+            }
             return this;
         }
 
         public Pet step(int hungerIncrease = 1, int happinessDecrease = 1) {
             // Increases hunger and decreases happiness
-            this.Hunger += hungerIncrease;
-            this.Happiness -= happinessDecrease;
+            this.feed(-hungerIncrease);
+            this.stroke(-happinessDecrease);
             return this;
         }
 
